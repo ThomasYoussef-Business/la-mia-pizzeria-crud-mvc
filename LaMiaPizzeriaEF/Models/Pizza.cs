@@ -38,7 +38,7 @@ namespace LaMiaPizzeriaEF.Models {
         [EndsWith(".png", ".jpg", ".jpeg", ".webp")]
         public string PictureUrl { get; set; }
 
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         [ForeignKey(nameof(CategoryId))]
         public Category? Category { get; set; }
     }
