@@ -29,7 +29,7 @@ namespace LaMiaPizzeriaEF.Models {
         public string Description { get; set; }
 
         [Required(ErrorMessage = "Il campo è obbligatorio.")]
-        [Range(0, double.MaxValue, ErrorMessage = "Il prezzo non può essere negativo.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Il prezzo non può essere negativo.")]
         [Column(TypeName = "decimal(18, 2)")]
         public double Price { get; set; }
 
@@ -40,6 +40,6 @@ namespace LaMiaPizzeriaEF.Models {
 
         public int? CategoryId { get; set; }
         [ForeignKey(nameof(CategoryId))]
-        public Category? Category { get; set; }
+        public Category Category { get; set; }
     }
 }

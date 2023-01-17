@@ -33,20 +33,25 @@ namespace LaMiaPizzeriaEF.Controllers {
         // ADD A NEW PIZZA
         public IActionResult New() {
             using var db = new PizzasDbContext();
-            Pizza emptyPizza = new();
-            List<Category> categories = db.Categories.ToList();
-            return View((Pizza: emptyPizza, Categories: categories));
+            PizzaCategoriesView DataTransferObject = new() {
+                Pizza = new Pizza(),
+                Categories = db.Categories.ToList()
+            };
+            return View(DataTransferObject);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult New(Pizza pizza) {
+        public IActionResult New(PizzaCategoriesView DataTransferObject) {
             if (!ModelState.IsValid) {
-                return View("New", pizza);
+                using (var db = new PizzasDbContext()) {
+                    DataTransferObject.Categories = db.Categories.ToList();
+                    return View(DataTransferObject);
+                }
             }
 
             using (var db = new PizzasDbContext()) {
-                int modifications = db.AddPizza(pizza);
+                int modifications = db.AddPizza(DataTransferObject.Pizza);
                 Console.WriteLine(modifications);
             }
 
@@ -57,7 +62,11 @@ namespace LaMiaPizzeriaEF.Controllers {
         public IActionResult Edit(int id) {
             using PizzasDbContext db = new();
             if (db.Pizzas.Find(id) is Pizza pizzaToEdit) {
-                return View(pizzaToEdit);
+                PizzaCategoriesView DataTransferObject = new() {
+                    Pizza = pizzaToEdit,
+                    Categories = db.Categories.ToList()
+                };
+                return View(DataTransferObject);
             }
             else {
                 return NotFound();
@@ -68,16 +77,21 @@ namespace LaMiaPizzeriaEF.Controllers {
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Pizza pizza) {
             if (!ModelState.IsValid) {
-                return View(pizza);
+                using var db = new PizzasDbContext();
+                PizzaCategoriesView DataTransferObject = new() {
+                    Pizza = pizza,
+                    Categories = db.Categories.ToList()
+                };
+                return View(DataTransferObject);
             }
 
             using (var db = new PizzasDbContext()) {
-
                 if (db.Pizzas.FirstOrDefault(p => p.Id == id) is Pizza pizzaToModify) {
                     pizzaToModify.Name = pizza.Name;
                     pizzaToModify.Description = pizza.Description;
                     pizzaToModify.Price = pizza.Price;
                     pizzaToModify.PictureUrl = pizza.PictureUrl;
+                    pizzaToModify.CategoryId = pizza.CategoryId;
                     db.SaveChanges();
                 }
                 else {
@@ -102,6 +116,5 @@ namespace LaMiaPizzeriaEF.Controllers {
                 return NotFound();
             }
         }
-
     }
 }

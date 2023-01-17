@@ -4,6 +4,7 @@ global using Microsoft.EntityFrameworkCore.SqlServer;
 global using System.ComponentModel.DataAnnotations.Schema;
 global using System.ComponentModel.DataAnnotations;
 global using System.Globalization;
+global using System.Dynamic;
 
 var cultureInfo = new CultureInfo("en-US");
 cultureInfo.NumberFormat.CurrencySymbol = "€";

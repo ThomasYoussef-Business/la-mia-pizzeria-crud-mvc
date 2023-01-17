@@ -1,36 +1,47 @@
-﻿@model Pizza
+﻿@model PizzaCategoriesView
 @{
     Layout = "_Header";
 }
 
-<form id="UpdateForm" asp-controller="Pizza" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+<form asp-controller="Pizza" asp-action="Edit" method="post">
     @Html.AntiForgeryToken()
     <div class="container-fluid d-flex flex-column align-items-center my-3">
         <div class="row g-5 w-100">
-            <div class="col-12 col-lg-4">
+            <div class="col-12 col-md-6 col-lg-4">
                 <label for="pizzaName" class="form-label">Nome</label>
-                <input asp-for="Name" type="text" class="form-control" id="pizzaName" aria-describedby="pizzaNameHelp">
+                <input asp-for="Pizza.Name" type="text" class="form-control" id="pizzaName" aria-describedby="pizzaNameHelp">
                 <div id="pizzaNameHelp" class="form-text">Il nome della pizza</div>
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <span asp-validation-for="Pizza.Name" class="text-danger"></span>
             </div>
-            <div class="col-12 col-lg-4">
+            <div class="col-12 col-md-6 col-lg-4">
                 <label for="pizzaImage" class="form-label">Link Immagine</label>
-                <input asp-for="PictureUrl" type="text" class="form-control" id="pizzaImage" aria-describedby="pizzaImgHelp">
+                <input asp-for="Pizza.PictureUrl" type="text" class="form-control" id="pizzaImage" aria-describedby="pizzaImgHelp">
                 <div id="pizzaImgHelp" class="form-text">Il link della pizza. Assicurati che punti ad un file .png or .jpg!</div>
-                <span asp-validation-for="PictureUrl" class="text-danger"></span>
+                <span asp-validation-for="Pizza.PictureUrl" class="text-danger"></span>
             </div>
-            <div class="col-12 col-lg-4">
+            <div class="col-12 col-md-6 col-lg-4">
                 <label for="pizzaPrice" class="form-label">Prezzo</label>
-                <input asp-for="Price" type="number" step=".01" class="form-control" id="pizzaPrice" aria-describedby="pizzaImgHelp" lang="en-us">
+                <input asp-for="Pizza.Price" type="number" step=".01" class="form-control" id="pizzaPrice" aria-describedby="pizzaImgHelp" lang="en-us">
                 <div id="pizzaImgHelp" class="form-text">Il prezzo della pizza.</div>
-                <span asp-validation-for="Price" class="text-danger"></span>
+                <span asp-validation-for="Pizza.Price" class="text-danger"></span>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <label for="pizzaCategory" class="form-label">Categoria</label>
+                <select asp-for="Pizza.CategoryId" id="pizzaCategory" aria-describedby="pizzaCategoryHelp">
+                    <option selected>Seleziona una categoria</option>
+                    @foreach (Category category in Model.Categories) {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </select>
+                <div id="pizzaCategoryHelp" class="form-text">La categoria della pizza.</div>
+                <span asp-validation-for="Pizza.CategoryId" class="text-danger"></span>
             </div>
             <div class="col-12">
                 <label for="pizzaDescription" class="form-label">Descrizione</label>
-                <textarea asp-for="Description" type="text" class="form-control" id="pizzaDescription" placeholder="Descrivi in modo succoso la tua pizza"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <textarea asp-for="Pizza.Description" type="text" class="form-control" id="pizzaDescription" placeholder="Descrivi in modo succoso la tua pizza"></textarea>
+                <span asp-validation-for="Pizza.Description" class="text-danger"></span>
             </div>
         </div>
-        <button type="submit" form="UpdateForm" class="btn btn-primary m-3 align-self-baseline">Save Changes</button>
+        <button type="submit" class="btn btn-primary m-3 align-self-baseline">Submit</button>
     </div>
 </form>
