@@ -1,7 +1,9 @@
-﻿using LaMiaPizzeriaEF.Models;
+﻿using LaMiaPizzeriaEF.Database;
+using LaMiaPizzeriaEF.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LaMiaPizzeriaEF.Controllers {
+namespace LaMiaPizzeriaEF.Controllers
+{
     public class PizzaController : Controller {
         // MAIN PAGE
         [Route("/pizze")]
