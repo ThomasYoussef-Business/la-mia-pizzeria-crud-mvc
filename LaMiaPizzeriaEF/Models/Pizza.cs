@@ -10,6 +10,11 @@ namespace LaMiaPizzeriaEF.Models {
             PictureUrl = pictureUrl;
         }
 
+        public Pizza(int id, string name, string description, double price, string pictureUrl, Category category) :
+            this(id, name, description, price, pictureUrl) {
+            Category = category;
+        }
+
         public Pizza() { }
 
         [Key]
@@ -32,5 +37,9 @@ namespace LaMiaPizzeriaEF.Models {
         [Url(ErrorMessage = "Il link alla foto deve essere un URL valido.")]
         [EndsWith(".png", ".jpg", ".jpeg", ".webp")]
         public string PictureUrl { get; set; }
+
+        public int CategoryId { get; set; }
+        [ForeignKey(nameof(CategoryId))]
+        public Category? Category { get; set; }
     }
 }
