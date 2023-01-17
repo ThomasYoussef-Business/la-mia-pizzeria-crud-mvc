@@ -2,14 +2,21 @@
 using LaMiaPizzeriaEF.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LaMiaPizzeriaEF.Controllers
-{
+namespace LaMiaPizzeriaEF.Controllers {
     public class PizzaController : Controller {
         // MAIN PAGE
         [Route("/pizze")]
         public IActionResult Index() {
             using var db = new PizzasDbContext();
             List<Pizza> pizzas = db.Pizzas.ToList();
+
+            foreach (Pizza pizza in pizzas) {
+
+                db.Entry(pizza)
+                  .Reference(p => p.Category)
+                  .Load();
+            }
+
             return View(pizzas);
         }
 
@@ -17,12 +24,18 @@ namespace LaMiaPizzeriaEF.Controllers
         public IActionResult Pizza(int id) {
             using var db = new PizzasDbContext();
             Pizza? pizza = db.Pizzas.Find(id);
+            db.Entry(pizza)
+              .Reference(p => p.Category)
+              .Load();
             return View(pizza);
         }
 
         // ADD A NEW PIZZA
         public IActionResult New() {
-            return View();
+            using var db = new PizzasDbContext();
+            Pizza emptyPizza = new();
+            List<Category> categories = db.Categories.ToList();
+            return View((Pizza: emptyPizza, Categories: categories));
         }
 
         [HttpPost]
@@ -38,21 +51,6 @@ namespace LaMiaPizzeriaEF.Controllers
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        // DELETE A PIZZA
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id) {
-            using PizzasDbContext db = new();
-            int deletedItems = db.DeletePizza(id);
-
-            if (deletedItems > 0) {
-                return RedirectToAction(nameof(Index));
-            }
-            else {
-                return NotFound();
-            }
         }
 
         // EDIT A PIZZA
@@ -89,5 +87,21 @@ namespace LaMiaPizzeriaEF.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        // DELETE A PIZZA
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id) {
+            using PizzasDbContext db = new();
+            int deletedItems = db.DeletePizza(id);
+
+            if (deletedItems > 0) {
+                return RedirectToAction(nameof(Index));
+            }
+            else {
+                return NotFound();
+            }
+        }
+
     }
 }
