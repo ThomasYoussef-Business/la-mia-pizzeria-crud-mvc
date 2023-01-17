@@ -1,0 +1,28 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<header>
+    <nav class="navbar navbar-expand-md bg-primary">
+        <div class="container-fluid p-2 px-4">
+            <a href="@Url.Action("Index", "Home")" class="navbar-brand">🍕</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="navbar-nav">
+                    <a href="@Url.Action("Index", "Pizza")" class="nav-link">Le nostre pizze</a>
+                    <a href="@Url.Action("New", "Pizza")" class="nav-link">Aggiungi una nuova pizza</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <div>
+        @RenderBody()
+    </div>
+</main>
+
+@await RenderSectionAsync("Scripts", required: false)

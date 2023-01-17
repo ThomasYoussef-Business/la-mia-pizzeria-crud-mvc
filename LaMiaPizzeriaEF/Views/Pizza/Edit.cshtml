@@ -1,0 +1,36 @@
+﻿@model Pizza
+@{
+    Layout = "_Header";
+}
+
+<form id="UpdateForm" asp-controller="Pizza" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+    @Html.AntiForgeryToken()
+    <div class="container-fluid d-flex flex-column align-items-center my-3">
+        <div class="row g-5 w-100">
+            <div class="col-12 col-lg-4">
+                <label for="pizzaName" class="form-label">Nome</label>
+                <input asp-for="Name" type="text" class="form-control" id="pizzaName" aria-describedby="pizzaNameHelp">
+                <div id="pizzaNameHelp" class="form-text">Il nome della pizza</div>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="col-12 col-lg-4">
+                <label for="pizzaImage" class="form-label">Link Immagine</label>
+                <input asp-for="PictureUrl" type="text" class="form-control" id="pizzaImage" aria-describedby="pizzaImgHelp">
+                <div id="pizzaImgHelp" class="form-text">Il link della pizza. Assicurati che punti ad un file .png or .jpg!</div>
+                <span asp-validation-for="PictureUrl" class="text-danger"></span>
+            </div>
+            <div class="col-12 col-lg-4">
+                <label for="pizzaPrice" class="form-label">Prezzo</label>
+                <input asp-for="Price" type="number" step=".01" class="form-control" id="pizzaPrice" aria-describedby="pizzaImgHelp" lang="en-us">
+                <div id="pizzaImgHelp" class="form-text">Il prezzo della pizza.</div>
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label for="pizzaDescription" class="form-label">Descrizione</label>
+                <textarea asp-for="Description" type="text" class="form-control" id="pizzaDescription" placeholder="Descrivi in modo succoso la tua pizza"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+        <button type="submit" form="UpdateForm" class="btn btn-primary m-3 align-self-baseline">Save Changes</button>
+    </div>
+</form>
