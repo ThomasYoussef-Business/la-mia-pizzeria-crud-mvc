@@ -43,11 +43,25 @@ namespace LaMiaPizzeriaEF.Models {
         #endregion
 
         #region Database Relationships
-        public int? CategoryId { get; set; }
+        public int CategoryId { get; set; }
         [ForeignKey(nameof(CategoryId))]
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
 
         public List<Tag> Tags { get; set; } = new List<Tag>();
+        #endregion
+
+        #region Comparisons
+        public bool HasTag(int tagId) {
+            return Tags.Any(tag => tag.Id == tagId);
+        }
+
+        public bool HasTag(string tagId) {
+            return HasTag(int.Parse(tagId));
+        }
+
+        public bool HasTag(Tag tag) {
+            return Tags.Contains(tag);
+        }
         #endregion
     }
 }

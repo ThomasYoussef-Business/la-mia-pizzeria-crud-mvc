@@ -36,6 +36,13 @@
                 <div id="pizzaCategoryHelp" class="form-text">La categoria della pizza.</div>
                 <span asp-validation-for="Pizza.CategoryId" class="text-danger"></span>
             </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <label for="pizzaTags" class="form-label">Allergeni</label>
+                <select asp-for="TagIds" asp-items="@Model.Tags" id="pizzaTags" aria-describedby="pizzaTagsHelp">
+                </select>
+                <div id="pizzaTagsHelp" class="form-text">Gli allergeni della pizza.</div>
+                <span asp-validation-for="Pizza.CategoryId" class="text-danger"></span>
+            </div>
             <div class="col-12">
                 <label for="pizzaDescription" class="form-label">Descrizione</label>
                 <textarea asp-for="Pizza.Description" type="text" class="form-control" id="pizzaDescription" placeholder="Descrivi in modo succoso la tua pizza"></textarea>

@@ -16,7 +16,16 @@
                         <h1>@Model.Name</h1>
                         <p class="lead">
                             @Model.Description<br>
-                            @Model.Price.ToString("C")
+                            @Model.Price.ToString("C")<br>
+                            Categoria: @Model.Category<br>
+                            @if (Model.Tags.Any()) {
+                                <text>Allergeni:</text>
+                                <br>
+                                @foreach (Tag tag in Model.Tags) {
+                                    @(tag.Text)
+
+                                    <br>
+                                }}
                         </p>
                     </div>
                 </div>

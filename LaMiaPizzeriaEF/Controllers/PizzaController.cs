@@ -1,6 +1,7 @@
 ﻿using LaMiaPizzeriaEF.Database;
 using LaMiaPizzeriaEF.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace LaMiaPizzeriaEF.Controllers {
     public class PizzaController : Controller {
@@ -27,31 +28,38 @@ namespace LaMiaPizzeriaEF.Controllers {
             db.Entry(pizza)
               .Reference(p => p.Category)
               .Load();
+            db.Entry(pizza)
+              .Collection(p => p.Tags)
+              .Load();
             return View(pizza);
         }
 
         // ADD A NEW PIZZA
         public IActionResult New() {
             using var db = new PizzasDbContext();
-            PizzaViewModel DataTransferObject = new() {
+            PizzaViewModel viewmodel = new() {
                 Pizza = new Pizza(),
-                Categories = db.Categories.ToList()
+                Categories = db.Categories.ToList(),
+                Tags = db.Tags.ToSelectListItem()
             };
-            return View(DataTransferObject);
+            return View(viewmodel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult New(PizzaViewModel DataTransferObject) {
+        public IActionResult New(PizzaViewModel viewmodel) {
             if (!ModelState.IsValid) {
                 using (var db = new PizzasDbContext()) {
-                    DataTransferObject.Categories = db.Categories.ToList();
-                    return View(DataTransferObject);
+                    viewmodel.Categories = db.Categories.ToList();
+                    viewmodel.Tags = db.Tags.ToSelectListItem();
+                    return View(viewmodel);
                 }
             }
 
             using (var db = new PizzasDbContext()) {
-                int modifications = db.AddPizza(DataTransferObject.Pizza);
+                viewmodel.Pizza.Tags = viewmodel.TagIds.ConvertAll(tagId => db.Tags.Find(int.Parse(tagId)));
+                // TODO: Fix this awful syntax, makes me feel like i'm programming in python fused with C++
+                int modifications = db.AddPizza(viewmodel.Pizza);
                 Console.WriteLine(modifications);
             }
 
@@ -59,14 +67,24 @@ namespace LaMiaPizzeriaEF.Controllers {
         }
 
         // EDIT A PIZZA
+        // TODO: Already added tags get wiped when editing a pizza
         public IActionResult Edit(int id) {
             using PizzasDbContext db = new();
             if (db.Pizzas.Find(id) is Pizza pizzaToEdit) {
-                PizzaViewModel DataTransferObject = new() {
+                PizzaViewModel viewmodel = new() {
                     Pizza = pizzaToEdit,
-                    Categories = db.Categories.ToList()
+                    Categories = db.Categories.ToList(),
+                    Tags = db.Tags.ToSelectListItem()
                 };
-                return View(DataTransferObject);
+
+                db.Entry(pizzaToEdit)
+                  .Collection(pizza => pizza.Tags)
+                  .Load();
+                foreach (var viewmodelTag in viewmodel.Tags) {
+                    viewmodelTag.Selected = pizzaToEdit.HasTag(viewmodelTag.Value);
+                }
+
+                return View(viewmodel);
             }
             else {
                 return NotFound();
@@ -75,23 +93,36 @@ namespace LaMiaPizzeriaEF.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Pizza pizza) {
+        public IActionResult Edit(int id, PizzaViewModel viewmodel) {
             if (!ModelState.IsValid) {
                 using var db = new PizzasDbContext();
-                PizzaViewModel DataTransferObject = new() {
-                    Pizza = pizza,
-                    Categories = db.Categories.ToList()
-                };
-                return View(DataTransferObject);
+                viewmodel.Categories = db.Categories.ToList();
+                viewmodel.Tags = db.Tags.ToSelectListItem();
+
+                db.Entry(viewmodel.Pizza)
+                  .Collection(pizza => pizza.Tags)
+                  .Load();
+                foreach (var viewmodelTag in viewmodel.Tags) {
+                    viewmodelTag.Selected = viewmodel.Pizza.HasTag(viewmodelTag.Value);
+                }
+
+                return View(viewmodel);
             }
 
             using (var db = new PizzasDbContext()) {
                 if (db.Pizzas.FirstOrDefault(p => p.Id == id) is Pizza pizzaToModify) {
-                    pizzaToModify.Name = pizza.Name;
-                    pizzaToModify.Description = pizza.Description;
-                    pizzaToModify.Price = pizza.Price;
-                    pizzaToModify.PictureUrl = pizza.PictureUrl;
-                    pizzaToModify.CategoryId = pizza.CategoryId;
+                    db.Entry(pizzaToModify)
+                      .Collection(p => p.Tags)
+                      .Load();
+
+                    pizzaToModify.Name = viewmodel.Pizza.Name;
+                    pizzaToModify.Description = viewmodel.Pizza.Description;
+                    pizzaToModify.Price = viewmodel.Pizza.Price;
+                    pizzaToModify.PictureUrl = viewmodel.Pizza.PictureUrl;
+                    pizzaToModify.CategoryId = viewmodel.Pizza.CategoryId;
+
+                    pizzaToModify.Tags.Clear();
+                    pizzaToModify.Tags.AddRange(viewmodel.TagIds.ToTagList(db));
                     db.SaveChanges();
                 }
                 else {
