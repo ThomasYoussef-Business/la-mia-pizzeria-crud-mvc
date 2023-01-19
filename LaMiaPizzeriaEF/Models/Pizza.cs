@@ -2,6 +2,7 @@
 
 namespace LaMiaPizzeriaEF.Models {
     public class Pizza {
+        #region Constructors
         public Pizza(int id, string name, string description, double price, string pictureUrl) {
             Id = id;
             Name = name;
@@ -16,7 +17,9 @@ namespace LaMiaPizzeriaEF.Models {
         }
 
         public Pizza() { }
+        #endregion
 
+        #region Database Properties
         [Key]
         public int Id { get; set; }
 
@@ -37,9 +40,14 @@ namespace LaMiaPizzeriaEF.Models {
         [Url(ErrorMessage = "Il link alla foto deve essere un URL valido.")]
         [EndsWith(".png", ".jpg", ".jpeg", ".webp")]
         public string PictureUrl { get; set; }
+        #endregion
 
+        #region Database Relationships
         public int? CategoryId { get; set; }
         [ForeignKey(nameof(CategoryId))]
         public Category Category { get; set; }
+
+        public List<Tag> Tags { get; set; } = new List<Tag>();
+        #endregion
     }
 }

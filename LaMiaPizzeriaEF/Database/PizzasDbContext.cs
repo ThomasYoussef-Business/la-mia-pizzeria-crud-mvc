@@ -4,6 +4,7 @@ namespace LaMiaPizzeriaEF.Database {
     public class PizzasDbContext : DbContext {
         public DbSet<Pizza> Pizzas { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Tag> Tags { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
             optionsBuilder.UseSqlServer("Data Source=localhost;Database=PizzaShop;" +
@@ -30,6 +31,18 @@ namespace LaMiaPizzeriaEF.Database {
         public int DeleteCategory(int id) {
             if (Categories.Find(id) is Category categoryToRemove) {
                 Categories.Remove(categoryToRemove);
+            }
+            return SaveChanges();
+        }
+
+        public int AddTag(Tag tag) {
+            Tags.Add(tag);
+            return SaveChanges();
+        }
+
+        public int DeleteTag(int id) {
+            if (Tags.Find(id) is Tag tagToRemove) {
+                Tags.Remove(tagToRemove);
             }
             return SaveChanges();
         }

@@ -1,5 +1,5 @@
 ﻿namespace LaMiaPizzeriaEF.Models {
-    public class PizzaCategoriesView {
+    public class PizzaViewModel {
         public Pizza Pizza { get; set; }
         public List<Category>? Categories { get; set; }
     }

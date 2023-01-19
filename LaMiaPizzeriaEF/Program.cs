@@ -5,6 +5,7 @@ global using System.ComponentModel.DataAnnotations.Schema;
 global using System.ComponentModel.DataAnnotations;
 global using System.Globalization;
 global using System.Dynamic;
+global using Microsoft.AspNetCore.Mvc.Rendering;
 
 var cultureInfo = new CultureInfo("en-US");
 cultureInfo.NumberFormat.CurrencySymbol = "€";

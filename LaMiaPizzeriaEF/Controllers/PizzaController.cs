@@ -33,7 +33,7 @@ namespace LaMiaPizzeriaEF.Controllers {
         // ADD A NEW PIZZA
         public IActionResult New() {
             using var db = new PizzasDbContext();
-            PizzaCategoriesView DataTransferObject = new() {
+            PizzaViewModel DataTransferObject = new() {
                 Pizza = new Pizza(),
                 Categories = db.Categories.ToList()
             };
@@ -42,7 +42,7 @@ namespace LaMiaPizzeriaEF.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult New(PizzaCategoriesView DataTransferObject) {
+        public IActionResult New(PizzaViewModel DataTransferObject) {
             if (!ModelState.IsValid) {
                 using (var db = new PizzasDbContext()) {
                     DataTransferObject.Categories = db.Categories.ToList();
@@ -62,7 +62,7 @@ namespace LaMiaPizzeriaEF.Controllers {
         public IActionResult Edit(int id) {
             using PizzasDbContext db = new();
             if (db.Pizzas.Find(id) is Pizza pizzaToEdit) {
-                PizzaCategoriesView DataTransferObject = new() {
+                PizzaViewModel DataTransferObject = new() {
                     Pizza = pizzaToEdit,
                     Categories = db.Categories.ToList()
                 };
@@ -78,7 +78,7 @@ namespace LaMiaPizzeriaEF.Controllers {
         public IActionResult Edit(int id, Pizza pizza) {
             if (!ModelState.IsValid) {
                 using var db = new PizzasDbContext();
-                PizzaCategoriesView DataTransferObject = new() {
+                PizzaViewModel DataTransferObject = new() {
                     Pizza = pizza,
                     Categories = db.Categories.ToList()
                 };
